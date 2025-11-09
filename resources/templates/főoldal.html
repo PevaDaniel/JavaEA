@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{css/style.css}">
+    <title>főoldal</title>
+</head>
+<body>
+<div class="container">
+    <h1>Üdvözöllek az oldalon!</h1>
+    <a th:href="@{'/főoldal'}">Főoldal</a>
+    <a th:href="@{'/SOAP'}">SOAP</a>
+    <a th:href="@{'/Faccount'}">fiók/Account</a>
+    <a th:href="@{'/Factual'}">Aktuális ár</a>
+    <a th:href="@{'/Fhist'}">Történelmi ár</a>
+    <a th:href="@{'/Fnyit'}">Pozíció nyitás</a>
+    <a th:href="@{'/Fzár'}">Pozíció zárás</a>
+</div>
+<div class="content">
+    <div class="text-center mb-5">
+        <h1 class="fw-bold">Beadandó EA – Felhasználói bemutató</h1>
+        <p class="text-muted">Ez az oldal bemutatja a rendszer fő funkcióit, azok célját és használatát felhasználói szinten.</p>
+    </div>
+
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0">Áttekintés</h4>
+        </div>
+        <div class="card-body">
+            <p>A program az OANDA API-val kommunikál, és lehetővé teszi a felhasználó számára, hogy lekérdezze a számlaadatait,
+                aktuális és historikus árfolyamokat jelenítsen meg, illetve pozíciókat nyisson és zárjon.
+                A menüpontok külön ablakokban (nézetekben) érhetők el, mindegyik saját űrlappal és eredményoldallal rendelkezik.</p>
+        </div>
+    </div>
+
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-success text-white">
+            <h4 class="mb-0">fiók/account – <code>/Faccount</code></h4>
+        </div>
+        <div class="card-body">
+            <p>Ebben az ablakban a felhasználó megtekintheti az OANDA számla összes alapadatát (Account ID, egyenleg, devizanem, margin információk stb.).</p>
+            <ul>
+                <li>A rendszer automatikusan lekéri az adatokat a bejelentkezett felhasználóhoz tartozó számláról.</li>
+                <li>Az adatok táblázatos formában jelennek meg a képernyőn.</li>
+            </ul>
+            <p><strong>Használat:</strong> csak meg kell nyitni a „fiók/account” oldalt, nincs szükség semmilyen bemenetre.</p>
+        </div>
+    </div>
+
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-info text-white">
+            <h4 class="mb-0">Aktuális árfolyam – <code>/Factual</code></h4>
+        </div>
+        <div class="card-body">
+            <p>Ez az ablak lehetőséget ad egy választott instrumentum (pl. EUR/USD, USD/JPY stb.) aktuális árfolyamának lekérdezésére.</p>
+            <ul>
+                <li>A felhasználó beírja az instrumentum nevét (pl. <code>EUR_USD</code>).</li>
+                <li>A program az OANDA API segítségével lekéri a jelenlegi árakat (ask, bid, closeout értékek).</li>
+                <li>Az eredmények táblázatban jelennek meg, a lekérés időpontjával együtt.</li>
+            </ul>
+            <p><strong>Használat:</strong> töltsd ki az űrlapot, majd kattints a „Lekérés” gombra.</p>
+        </div>
+    </div>
+
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-warning text-dark">
+            <h4 class="mb-0">Historikus árfolyam – <code>/Fhist</code></h4>
+        </div>
+        <div class="card-body">
+            <p>Ebben az ablakban múltbeli árfolyamadatok (candlestick adatok) kérhetők le egy kiválasztott instrumentumhoz és időtávhoz.</p>
+            <ul>
+                <li>A felhasználó megadja az instrumentumot (pl. <code>EUR_USD</code>) és az időfelbontást (<code>M1</code>, <code>H1</code>, <code>D</code>, stb.).</li>
+                <li>A program 10 darab gyertyát (candlestick adatot) kér le és jelenít meg.</li>
+                <li>Az adatok tartalmazzák a nyitó, záró, legmagasabb és legalacsonyabb árakat, valamint az időpontot.</li>
+            </ul>
+            <p><strong>Használat:</strong> add meg az instrumentumot és a felbontást, majd kattints a „Lekérés” gombra.</p>
+        </div>
+    </div>
+
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-danger text-white">
+            <h4 class="mb-0">Pozíció nyitása – <code>/Fnyit</code></h4>
+        </div>
+        <div class="card-body">
+            <p>Itt új kereskedési pozíciót lehet megnyitni egy kiválasztott instrumentumra.</p>
+            <ul>
+                <li>A felhasználó megadja az instrumentum nevét és az egységek számát (<code>units</code>).</li>
+                <li>Pozitív érték: vétel (long pozíció), negatív érték: eladás (short pozíció).</li>
+                <li>A sikeres nyitás után megjelenik a létrehozott trade azonosító (<code>tradeId</code>).</li>
+            </ul>
+            <p><strong>Használat:</strong> töltsd ki az instrumentumot és az egység számát, majd kattints a „Nyitás” gombra.</p>
+        </div>
+    </div>
+
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-secondary text-white">
+            <h4 class="mb-0">Pozíció zárása – <code>/Fzár</code></h4>
+        </div>
+        <div class="card-body">
+            <p>Ezen az oldalon egy megnyitott pozíció (trade) zárható le a <code>tradeId</code> megadásával.</p>
+            <ul>
+                <li>A felhasználó megadja a lezárni kívánt pozíció azonosítóját.</li>
+                <li>A program az OANDA API-n keresztül lezárja a megadott trade-et.</li>
+                <li>A sikeres zárásról visszajelzést ad a rendszer.</li>
+            </ul>
+            <p><strong>Használat:</strong> írd be a trade azonosítóját, majd kattints a „Zárás” gombra.</p>
+        </div>
+    </div>
+
+    <div class="card shadow-sm mb-5">
+        <div class="card-header bg-dark text-white">
+            <h4 class="mb-0">SOAP – <code>/SOAP</code></h4>
+        </div>
+        <div class="card-body">
+            <p>A SOAP oldal külön funkciókat tartalmazhat, például külső szolgáltatások elérését vagy kiegészítő adatkezelést.
+                A pontos funkciók a fejlesztés során kerültek meghatározásra, de alapvetően kiegészítő információkat vagy kapcsolatot biztosít a rendszer többi részével.</p>
+        </div>
+    </div>
+</div>
+</body>
+</html>
