@@ -16,11 +16,30 @@
     <a th:href="@{'/Fnyit'}">Pozíció nyitás</a>
     <a th:href="@{'/Fzár'}">Pozíció zárás</a>
 </div>
+
 <div class="content">
-    <p th:text="'Instrument: ' + ${instr}" />
-    <p th:text="'Granularity: ' + ${granularity}" />
-    <p th:text="'Historical prices: ' + ${price}" />
-    <a th:href="@{'/Fhist'}">Select another instrument</a>
+    <h2 th:text="'Historikus adatok - ' + ${instr} + ' (' + ${granularity} + ')'"></h2>
+
+    <table class="price-table" th:if="${candles}">
+        <thead>
+        <tr>
+            <th>Időpont</th>
+            <th>Open</th>
+            <th>High</th>
+            <th>Low</th>
+            <th>Close</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="candle : ${candles}">
+            <td th:text="${candle['Time']}"></td>
+            <td th:text="${candle['Open']}"></td>
+            <td th:text="${candle['High']}"></td>
+            <td th:text="${candle['Low']}"></td>
+            <td th:text="${candle['Close']}"></td>
+        </tr>
+        </tbody>
+    </table>
 </div>
 </body>
 </html>
