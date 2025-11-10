@@ -8,6 +8,6 @@ public class PageController {
 
     @GetMapping("/soap")
     public String soapPage() {
-        return "SOAP"; // a templates/SOAP.html fájl neve
+        return "SOAP";
     }
 }

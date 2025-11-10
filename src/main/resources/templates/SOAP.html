@@ -1,20 +1,158 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hu" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>SOAP menü</title>
     <link rel="stylesheet" th:href="@{css/style.css}">
+
+    <style>
+        /* Fehér doboz a lekérdezéshez */
+        .content-box {
+            background: #ffffff;
+            width: 80%;
+            margin: 30px auto;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+        }
+
+        canvas {
+            display: block;
+            margin: 20px auto;
+            background: #fff;
+            border-radius: 8px;
+        }
+
+        h1, h2 {
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
 <div class="container">
     <h1>SOAP menü</h1>
-    <a th:href="@{'/főoldal'}">Főoldal</a>
-    <a th:href="@{'/SOAP'}">SOAP</a>
-    <a th:href="@{'/Faccount'}">fiók/Account</a>
-    <a th:href="@{'/Factual'}">Aktuális ár</a>
-    <a th:href="@{'/Fhist'}">Történelmi ár</a>
-    <a th:href="@{'/Fnyit'}">Pozíció nyitás</a>
-    <a th:href="@{'/Fzár'}">Pozíció zárás</a>
+
+    <nav>
+        <a th:href="@{'/főoldal'}">Főoldal</a>
+        <a th:href="@{'/SOAP'}">SOAP</a>
+        <a th:href="@{'/Faccount'}">Fiók / Account</a>
+        <a th:href="@{'/Factual'}">Aktuális ár</a>
+        <a th:href="@{'/Fhist'}">Történelmi ár</a>
+        <a th:href="@{'/Fnyit'}">Pozíció nyitás</a>
+        <a th:href="@{'/Fzár'}">Pozíció zárás</a>
+    </nav>
 </div>
+
+<!-- 🔽 Fehér háttérű külön rész a lekérdezéshez -->
+<div class="content-box">
+    <h2>Devizaárfolyam lekérdezés (MNB SOAP)</h2>
+
+    <form id="form" style="margin-bottom: 20px; text-align: center;">
+        <label>Válassz devizát:</label>
+        <select id="currency">
+            <option value="EUR">EUR</option>
+            <option value="USD">USD</option>
+            <option value="GBP">GBP</option>
+        </select>
+        <br><br>
+
+        <label>Kezdő dátum:</label>
+        <input type="date" id="start" required>
+        <br><br>
+
+        <label>Végdátum:</label>
+        <input type="date" id="end" required>
+        <br><br>
+
+        <button type="submit">Lekérdezés</button>
+    </form>
+
+    <canvas id="chart" width="900" height="400"></canvas>
+</div>
+
+<!-- Chart.js betöltése -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        let chart;
+
+        document.getElementById('form').addEventListener('submit', async e => {
+            e.preventDefault();
+
+            const currency = document.getElementById('currency').value;
+            const start = document.getElementById('start').value;
+            const end = document.getElementById('end').value;
+
+            console.log("Lekérdezés indult:", currency, start, end);
+
+            try {
+                const resp = await fetch(`http://localhost:8080/api/mnb/rates?currency=${currency}&start=${start}&end=${end}`);
+                const data = await resp.json();
+
+                console.log("Kapott adatok:", data);
+
+                if (!data || data.length === 0) {
+                    alert("Nincs adat a megadott időszakra!");
+                    return;
+                }
+
+                // Az MNB adatai fordított időrendben jönnek → megfordítjuk
+                const labels = data.map(p => p.date).reverse();
+                const values = data.map(p => p.value).reverse();
+
+                if (chart) chart.destroy();
+
+                const ctx = document.getElementById('chart').getContext('2d');
+                chart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: `${currency} árfolyam (HUF)`,
+                            data: values,
+                            borderColor: 'rgb(75, 192, 192)',
+                            borderWidth: 2,
+                            tension: 0.3,
+                            fill: true,
+                            backgroundColor: 'rgba(75, 192, 192, 0.15)'
+                        }]
+                    },
+                    options: {
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: `MNB ${currency} árfolyamok (${start} → ${end})`
+                            },
+                            legend: {
+                                display: true
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(ctx) {
+                                        return `${ctx.parsed.y.toFixed(2)} HUF`;
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                title: { display: true, text: 'Dátum' },
+                                ticks: { maxRotation: 45, minRotation: 45 }
+                            },
+                            y: {
+                                title: { display: true, text: 'Árfolyam (HUF)' },
+                                beginAtZero: false
+                            }
+                        }
+                    }
+                });
+            } catch (err) {
+                console.error("Hiba a lekérdezésnél:", err);
+                alert("Hiba történt az adatok lekérdezése közben.");
+            }
+        });
+    });
+</script>
 </body>
 </html>
