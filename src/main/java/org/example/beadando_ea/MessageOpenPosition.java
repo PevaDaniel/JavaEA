@@ -1,8 +1,8 @@
 package org.example.beadando_ea;
 
-public class MessageHistPrice {
+public class MessageOpenPosition {
     private String instrument;
-    private String granularity;
+    private int units;
 
     public String getInstrument() {
         return instrument;
@@ -12,11 +12,11 @@ public class MessageHistPrice {
         this.instrument = instrument;
     }
 
-    public String getGranularity() {
-        return granularity;
+    public int getUnits() {
+        return units;
     }
 
-    public void setGranularity(String granularity) {
-        this.granularity = granularity;
+    public void setUnits(int units) {
+        this.units = units;
     }
 }
