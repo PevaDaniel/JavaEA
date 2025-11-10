@@ -17,7 +17,7 @@
     <a th:href="@{'/Fzár'}">Pozíció zárás</a>
 </div>
 <div class="content">
-    <h1>Select instrument</h1>j
+    <h1>Select instrument</h1>
     <form th:action="@{/Factual}" th:object="${par}" method="post">
         <select name="instruments" th:field="*{instrument}">
             <option value="EUR_USD">EUR_USD</option>
