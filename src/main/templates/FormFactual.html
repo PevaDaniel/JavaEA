@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Actuális ár</title>
+    <link rel="stylesheet" th:href="@{css/style.css}">
+</head>
+<body>
+<div class="container">
+    <h1>Aktuális ár menü</h1>
+    <a th:href="@{'/főoldal'}">Főoldal</a>
+    <a th:href="@{'/SOAP'}">SOAP</a>
+    <a th:href="@{'/Faccount'}">fiók/Account</a>
+    <a th:href="@{'/Factual'}">Aktuális ár</a>
+    <a th:href="@{'/Fhist'}">Történelmi ár</a>
+    <a th:href="@{'/Fnyit'}">Pozíció nyitás</a>
+    <a th:href="@{'/Fzár'}">Pozíció zárás</a>
+</div>
+<div class="content">
+    <h1>Select instrument</h1>j
+    <form th:action="@{/Factual}" th:object="${par}" method="post">
+        <select name="instruments" th:field="*{instrument}">
+            <option value="EUR_USD">EUR_USD</option>
+            <option value="USD_CHF">USD_CHF</option>
+            <option value="GBP_USD">GBP_USD</option>
+            <option value="USD_JPY">USD_JPY</option>
+        </select>
+        <input type="submit" value="Submit">
+    </form>
+</div>
+</body>
+</html>

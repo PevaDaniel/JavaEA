@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Zárás</title>
+    <link rel="stylesheet" th:href="@{css/style.css}">
+</head>
+<body>
+<div class="container">
+    <h1>pozíció zárás</h1>
+    <a th:href="@{'/főoldal'}">Főoldal</a>
+    <a th:href="@{'/SOAP'}">SOAP</a>
+    <a th:href="@{'/Faccount'}">fiók/Account</a>
+    <a th:href="@{'/Factual'}">Aktuális ár</a>
+    <a th:href="@{'/Fhist'}">Történelmi ár</a>
+    <a th:href="@{'/Fnyit'}">Pozíció nyitás</a>
+    <a th:href="@{'/Fzár'}">Pozíció zárás</a>
+</div>
+<div class="content">
+    <h1>Closed position</h1>
+    <p th:text="${tradeId}"/>
+    <a th:href="@{'/Fzár'}">Close another position</a>
+</div>
+</body>
+</html>
