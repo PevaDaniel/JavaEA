@@ -6,9 +6,10 @@ import com.oanda.v20.instrument.Candlestick;
 import com.oanda.v20.instrument.CandlestickGranularity;
 import com.oanda.v20.instrument.InstrumentCandlesRequest;
 import com.oanda.v20.instrument.InstrumentCandlesResponse;
+import com.oanda.v20.trade.Trade;
 import com.oanda.v20.trade.TradeCloseRequest;
+import com.oanda.v20.trade.TradeID;
 import com.oanda.v20.trade.TradeSpecifier;
-import com.oanda.v20.transaction.*;
 import com.oanda.v20.pricing.ClientPrice;
 import com.oanda.v20.pricing.PricingGetRequest;
 import com.oanda.v20.pricing.PricingGetResponse;
@@ -193,9 +194,26 @@ public class BeadandoEaApplication {
 
     @GetMapping("Fzár")
     public String Fzár(Model model) {
+        List<TradeID> openTradeIds = new ArrayList<>();
+        try {
+            List<Trade> trades = ctx.trade.listOpen(Config.ACCOUNTID).getTrades();
+            if (trades != null) {
+                for (Trade trade : trades) {
+                    openTradeIds.add(trade.getId());
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            model.addAttribute("error", "Hiba a nyitott pozíciók lekérésekor: " + e.getMessage());
+        }
+
         model.addAttribute("param", new MessageClosePosition());
+        model.addAttribute("openTradeIds", openTradeIds);
         return "FormFzár";
     }
+
+
+
     @PostMapping("Fzár")
     public String fzár(@ModelAttribute MessageClosePosition messageClosePosition, Model model) {
         String tradeId= messageClosePosition.getTradeId()+"";
